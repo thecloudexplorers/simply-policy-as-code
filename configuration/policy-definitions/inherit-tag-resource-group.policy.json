@@ -1,0 +1,54 @@
+{
+  "name": "contoso-inherit-mandatory-tag-from-subscription-to-rg",
+  "properties": {
+    "displayName": "Contoso - Inherit a mandatory tag from the subscription to resource groups",
+    "description": "Adds or replaces the specified mandatory tag on resource groups with the value of the same tag on the subscription. Resource groups are not evaluated by the built-in policy because it runs in Indexed mode. Nothing happens when the subscription does not have the tag or its value is empty.",
+    "mode": "All",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+    "parameters": {
+      "tagName": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag name",
+          "description": "Name of the tag, such as 'costcenter'"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "notEquals": "[subscription().tags[parameters('tagName')]]"
+          },
+          {
+            "value": "[subscription().tags[parameters('tagName')]]",
+            "notEquals": ""
+          }
+        ]
+      },
+      "then": {
+        "effect": "modify",
+        "details": {
+          "roleDefinitionIds": [
+            "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "operations": [
+            {
+              "operation": "addOrReplace",
+              "field": "[concat('tags[', parameters('tagName'), ']')]",
+              "value": "[subscription().tags[parameters('tagName')]]"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

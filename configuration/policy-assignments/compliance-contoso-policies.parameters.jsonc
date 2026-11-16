@@ -1,0 +1,399 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "policyAssignments": {
+      "value": [
+        // Microsoft cloud security benchmark (MCSB) v2 for the whole Contoso management group,
+        // except Sandbox.
+        //
+        // How the effects work:
+        // - The members selected in AssignmentOverrides are set to Audit. They report non-compliance but do not
+        //   block requests. To enforce a baseline later, set the value of that resource family back to Deny.
+        // - All other members keep their built-in effect.
+        //
+        // Related assignments:
+        // - Sandbox gets its own audit-only assignment in compliance-sandbox-policies.parameters.jsonc,
+        //   so it stays visible in compliance reports without these overrides.
+        // - The Legacy management group uses compliance-legacy-policies.parameters.jsonc and gets no overrides.
+        //
+        {
+          "TargetScope": "mg-contoso",
+          "Assignment": {
+            // Azure allows at most 24 characters for an assignment name at management group scope.
+            "AssignmentName": "contoso-mcsb-v2",
+            "AssignmentDisplayName": "Contoso - Microsoft Cloud security benchmark v2",
+            "AssignmentPolicyId": "/providers/Microsoft.Authorization/policySetDefinitions/e3ec7e09-768c-4b64-882c-fcada3772047",
+            "AssignmentDescription": "Microsoft Cloud Security Benchmark v2 on the Contoso management group. Selected member overrides are Audit, so they report non-compliance and do not block requests. Customer-managed key encryption stays at the initiative effect. All other members keep their built-in effect.",
+            "AssignmentEnforcementMode": "Default",
+            // MCSB v2 contains policies that can change or deploy resources (Modify and DeployIfNotExists),
+            // so Azure requires a managed identity, even though the overrides below only audit.
+            // The identity has no roles yet. Those policies cannot fix anything until roles are added
+            // with RoleDefinitionIds on this entry.
+            "AssignmentIdentityType": "SystemAssigned",
+            "AssignmentLocation": "westeurope",
+            // Scopes that do not inherit this assignment:
+            // - Sandbox (mg-sandbox): has its own audit-only assignment, see compliance-sandbox-policies.parameters.jsonc.
+            // Decommissioned (mg-decommissioned) and Quarantine (mg-quarantine) inherit this assignment.
+            "AssignmentNotScopes": [
+              "/providers/Microsoft.Management/managementGroups/mg-sandbox"
+            ],
+            "AssignmentParameters": {
+              "storageAccountsExcludedManagedByResourceProviders": {
+                "value": [
+                  "Azure Red Hat OpenShift"
+                ]
+              },
+              // Key Vault certificates
+              "certificatesValidityPeriodInMonths": {
+                "value": 12
+              },
+              "certificatesDaysToExpire": {
+                "value": 90
+              },
+              "certificates_LifetimeActionMaximumPercentageLife": {
+                "value": 80
+              },
+              "certificates_LifetimeActionMinimumDaysBeforeExpiry": {
+                "value": 30
+              },
+              "certificates_RSA_MinimumKeySizeMinimumRSAKeySize": {
+                "value": 2048
+              },
+              // Key Vault keys
+              "keys_RSA_MinimumKeySizeMinimumRSAKeySize": {
+                "value": 2048
+              },
+              "keys_Expiry_ByDaysMinimumDaysBeforeExpiration": {
+                "value": 30
+              },
+              "keysSpecifiedMaximumValidityInDays": {
+                "value": 730
+              },
+              "keysNotActiveLongerThanMaximumValidityInDays": {
+                "value": 730
+              },
+              // Key Vault secrets
+              "secretsMinimumDaysBeforeExpiration": {
+                "value": 90
+              },
+              "secretsSpecifiedMaximumValidityInDays": {
+                "value": 730
+              },
+              "secretsNotActiveLongerThanMaximumValidityInDays": {
+                "value": 730
+              }
+            },
+            // Messages shown in the Azure portal when a resource is non-compliant.
+            // - AssignmentNonComplianceMessage is the general message.
+            // - Each entry of AssignmentNonComplianceMessages is specific to one policy, so the portal names the setting.
+            // Key Vault certificates, keys and secrets have no specific message. Their policies use the mode
+            // Microsoft.KeyVault.Data, and Azure only supports non-compliance messages for Resource Manager mode
+            // policies. Their effect overrides still apply, see AssignmentOverrides below.
+            "AssignmentNonComplianceMessage": "This request does not meet the Contoso MCSB v2 baseline on the Contoso management group. The control is in Audit and does not block this request.",
+            "AssignmentNonComplianceMessages": [
+              {
+                "message": "Non-compliant with virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled. Virtual machines and scale sets must have encryption at host enabled.",
+                "policyDefinitionReferenceId": "virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled"
+              },
+              {
+                "message": "Non-compliant with systemUpdatesAutoAssessmentMode. Machines must be configured to periodically check for missing system updates.",
+                "policyDefinitionReferenceId": "systemUpdatesAutoAssessmentMode"
+              },
+              {
+                "message": "Non-compliant with StorageDisallowPublicAccess. Blob public access must be disabled on the storage account.",
+                "policyDefinitionReferenceId": "StorageDisallowPublicAccess"
+              },
+              {
+                "message": "Non-compliant with secureTransferToStorageAccountMonitoring. Secure transfer must be enabled so the storage account accepts HTTPS only.",
+                "policyDefinitionReferenceId": "secureTransferToStorageAccountMonitoring"
+              },
+              {
+                "message": "Non-compliant with disableUnrestrictedNetworkToStorageAccountMonitoring. The storage account must restrict network access.",
+                "policyDefinitionReferenceId": "disableUnrestrictedNetworkToStorageAccountMonitoring"
+              },
+              {
+                "message": "Non-compliant with storageAccess_TrustedMicrosoftServices_Audit. The storage account firewall must allow trusted Microsoft services.",
+                "policyDefinitionReferenceId": "storageAccess_TrustedMicrosoftServices_Audit"
+              },
+              {
+                "message": "Non-compliant with storageAccountAllowCrossTenantReplication_Audit. Cross-tenant object replication must be turned off on the storage account.",
+                "policyDefinitionReferenceId": "storageAccountAllowCrossTenantReplication_Audit"
+              },
+              {
+                "message": "Non-compliant with storageAccountsShouldPreventSharedKeyAccess. Shared key access must be disabled on the storage account.",
+                "policyDefinitionReferenceId": "storageAccountsShouldPreventSharedKeyAccess"
+              },
+              {
+                "message": "Non-compliant with StoragesInfrastructureEncryption. Infrastructure encryption must be enabled on the storage account.",
+                "policyDefinitionReferenceId": "StoragesInfrastructureEncryption"
+              },
+              {
+                "message": "Non-compliant with StorageKeysNotExpired. Storage account keys must be unexpired.",
+                "policyDefinitionReferenceId": "StorageKeysNotExpired"
+              },
+              {
+                "message": "Non-compliant with StoragesSpecifiedMinimumTlsVersion. The storage account must use the minimum TLS version required by the policy.",
+                "policyDefinitionReferenceId": "StoragesSpecifiedMinimumTlsVersion"
+              },
+              {
+                "message": "Non-compliant with StorageEncryptionScopesDoubleEncryptionDataRest. The storage encryption scope must use double encryption for data at rest.",
+                "policyDefinitionReferenceId": "StorageEncryptionScopesDoubleEncryptionDataRest"
+              },
+              {
+                "message": "Non-compliant with StoragesPublicAccess. Public network access must be disabled on the storage account.",
+                "policyDefinitionReferenceId": "StoragesPublicAccess"
+              },
+              {
+                "message": "Non-compliant with firewallShouldBeEnabledOnKeyVaultMonitoringEffect. The key vault must enable its firewall or disable public network access.",
+                "policyDefinitionReferenceId": "firewallShouldBeEnabledOnKeyVaultMonitoringEffect"
+              },
+              {
+                "message": "Non-compliant with KVPublicAccess. Public network access must be disabled on the key vault.",
+                "policyDefinitionReferenceId": "KVPublicAccess"
+              },
+              {
+                "message": "Non-compliant with keyVaultsShouldHavePurgeProtectionEnabledMonitoringEffect. Purge protection must be enabled on the key vault.",
+                "policyDefinitionReferenceId": "keyVaultsShouldHavePurgeProtectionEnabledMonitoringEffect"
+              },
+              {
+                "message": "Non-compliant with keyVaultsShouldHaveSoftDeleteEnabledMonitoringEffect. Soft delete must be enabled on the key vault.",
+                "policyDefinitionReferenceId": "keyVaultsShouldHaveSoftDeleteEnabledMonitoringEffect"
+              },
+              {
+                "message": "Non-compliant with keyvaultServiceRbacEnabledMonitoring. The key vault must use the Azure RBAC permission model.",
+                "policyDefinitionReferenceId": "keyvaultServiceRbacEnabledMonitoring"
+              },
+              {
+                "message": "Non-compliant with managedHsm_Recoverable_Audit. Purge protection must be enabled on the managed HSM.",
+                "policyDefinitionReferenceId": "managedHsm_Recoverable_Audit"
+              },
+              {
+                "message": "Non-compliant with PublicAccessPostgreSQLFlexibleServers. Public network access must be disabled on the PostgreSQL flexible server.",
+                "policyDefinitionReferenceId": "PublicAccessPostgreSQLFlexibleServers"
+              },
+              {
+                "message": "Non-compliant with PublicAccessMySQLFlexibleServers. Public network access must be disabled on the MySQL flexible server.",
+                "policyDefinitionReferenceId": "PublicAccessMySQLFlexibleServers"
+              },
+              {
+                "message": "Non-compliant with sqlManagedInstanceADOnlyEnabledMonitoring. A SQL managed instance must enable Microsoft Entra-only authentication when it is created.",
+                "policyDefinitionReferenceId": "sqlManagedInstanceADOnlyEnabledMonitoring"
+              },
+              {
+                "message": "Non-compliant with sqlManagedInstanceDisablingADOnlyAuthMonitoring. Microsoft Entra-only authentication must stay enabled on the SQL managed instance.",
+                "policyDefinitionReferenceId": "sqlManagedInstanceDisablingADOnlyAuthMonitoring"
+              },
+              {
+                "message": "Non-compliant with azureSQLManagedInstancesShouldDisablePublicNetworkAccess. Public network access must be disabled on the SQL managed instance.",
+                "policyDefinitionReferenceId": "azureSQLManagedInstancesShouldDisablePublicNetworkAccess"
+              },
+              {
+                "message": "Non-compliant with sqlServerADOnlyEnabledMonitoring. An Azure SQL logical server must enable Microsoft Entra-only authentication when it is created.",
+                "policyDefinitionReferenceId": "sqlServerADOnlyEnabledMonitoring"
+              },
+              {
+                "message": "Non-compliant with sqlServerDisableADOnlyAuthMonitoring. Microsoft Entra-only authentication must stay enabled on the Azure SQL logical server.",
+                "policyDefinitionReferenceId": "sqlServerDisableADOnlyAuthMonitoring"
+              },
+              {
+                "message": "Non-compliant with azureSQLDatabaseShouldBeRunningTLSVersion12OrNewer. The Azure SQL logical server must use TLS version 1.2 or newer.",
+                "policyDefinitionReferenceId": "azureSQLDatabaseShouldBeRunningTLSVersion12OrNewer"
+              },
+              {
+                "message": "Non-compliant with publicNetworkAccessOnAzureSQLDatabaseShouldBeDisabledMonitoringEffect. Public network access must be disabled on the Azure SQL logical server.",
+                "policyDefinitionReferenceId": "publicNetworkAccessOnAzureSQLDatabaseShouldBeDisabledMonitoringEffect"
+              },
+              {
+                "message": "Non-compliant with ManagedDisksPublicAccess. Public network access must be disabled on the managed disk.",
+                "policyDefinitionReferenceId": "ManagedDisksPublicAccess"
+              }
+            ],
+            // Overrides change the effect of selected policies in the initiative.
+            // Azure Policy allows at most 10 overrides per assignment and 50 policyDefinitionReferenceId values per selector.
+            "AssignmentOverrides": [
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Virtual machines and virtual machine scale sets should have encryption at host enabled
+                      "virtualMachinesAndVirtualMachineScaleSetsShouldHaveEncryptionAtHostEnabled",
+                      // Machines should be configured to periodically check for missing system updates
+                      "systemUpdatesAutoAssessmentMode"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Storage account public access should be disallowed
+                      "StorageDisallowPublicAccess",
+                      // Secure transfer to storage accounts should be enabled
+                      "secureTransferToStorageAccountMonitoring",
+                      // Storage accounts should restrict network access
+                      "disableUnrestrictedNetworkToStorageAccountMonitoring",
+                      // Storage accounts should allow access from trusted Microsoft services
+                      "storageAccess_TrustedMicrosoftServices_Audit",
+                      // Storage accounts should prevent cross tenant object replication
+                      "storageAccountAllowCrossTenantReplication_Audit",
+                      // Storage accounts should prevent shared key access
+                      "storageAccountsShouldPreventSharedKeyAccess",
+                      // Storage accounts should have infrastructure encryption
+                      "StoragesInfrastructureEncryption",
+                      // Storage account keys should not be expired
+                      "StorageKeysNotExpired",
+                      // Storage accounts should have the specified minimum TLS version
+                      "StoragesSpecifiedMinimumTlsVersion",
+                      // Storage account encryption scopes should use double encryption for data at rest
+                      "StorageEncryptionScopesDoubleEncryptionDataRest",
+                      // Storage accounts should disable public network access
+                      "StoragesPublicAccess"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Vault and Managed HSM configuration
+                      // Azure Key Vault should have firewall enabled or public network access disabled
+                      "firewallShouldBeEnabledOnKeyVaultMonitoringEffect",
+                      // Azure Key Vault should disable public network access
+                      "KVPublicAccess",
+                      // Key vaults should have deletion protection enabled
+                      "keyVaultsShouldHavePurgeProtectionEnabledMonitoringEffect",
+                      // Key vaults should have soft delete enabled
+                      "keyVaultsShouldHaveSoftDeleteEnabledMonitoringEffect",
+                      // Azure Key Vault should use RBAC permission model
+                      "keyvaultServiceRbacEnabledMonitoring",
+                      // Azure Key Vault Managed HSM should have purge protection enabled
+                      "managedHsm_Recoverable_Audit",
+                      // Certificates
+                      // Certificates should use allowed key types
+                      "certificates_AllowedKeyTypes",
+                      // Certificates using elliptic curve cryptography should have allowed curve names
+                      "certificates_EC_AllowedCurveNames",
+                      // Certificates should not expire within the specified number of days
+                      "CertificatesNotExpireWithinSpecifiedNumberDays",
+                      // Certificates should have the specified lifetime action triggers
+                      "certificates_LifetimeAction",
+                      // Certificates using RSA cryptography should have the specified minimum key size
+                      "certificates_RSA_MinimumKeySize",
+                      // Certificates should have the specified maximum validity period
+                      "CertificatesSpecifiedMaximumValidityPeriod",
+                      "certificatesValidityPeriodMonitoring",
+                      // Keys
+                      // Keys should not be active for longer than the specified number of days
+                      "KeysNotActiveLongerThanSpecifiedNumberDays",
+                      // Keys should be the specified cryptographic type RSA or EC
+                      "keys_AllowedKeyTypes",
+                      // Keys using elliptic curve cryptography should have the specified curve names
+                      "keys_EC_AllowedCurveNames",
+                      // Key Vault keys should have an expiration date
+                      "keysExpirationSet",
+                      // Keys should have more than the specified number of days before expiration
+                      "keys_Expiry_ByDays",
+                      // Keys should be backed by a hardware security module (HSM)
+                      "keys_HSMBacked",
+                      // Keys using RSA cryptography should have a specified minimum key size
+                      "keys_RSA_MinimumKeySize",
+                      // Keys should have the specified maximum validity period
+                      "KeysSpecifiedMaximumValidityPeriod",
+                      // Secrets
+                      // Secrets should not be active for longer than the specified number of days
+                      "SecretsNotActiveLongerThanSpecifiedNumberDays",
+                      // Secrets should have content type set
+                      "secrets_ContentTypeSet",
+                      // Key Vault secrets should have an expiration date
+                      "secretsExpirationSet",
+                      // Secrets should have more than the specified number of days before expiration
+                      "SecretsMoreThanSpecifiedNumberDaysBeforeExpiration",
+                      // Secrets should have the specified maximum validity period
+                      "SecretsSpecifiedMaximumValidityPeriod"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Public network access should be disabled for PostgreSQL flexible servers
+                      "PublicAccessPostgreSQLFlexibleServers"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Public network access should be disabled for MySQL flexible servers
+                      "PublicAccessMySQLFlexibleServers"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Azure SQL Managed Instances should have Microsoft Entra-only authentication enabled during creation
+                      "sqlManagedInstanceADOnlyEnabledMonitoring",
+                      // Azure SQL Managed Instance should have Microsoft Entra-only authentication enabled
+                      "sqlManagedInstanceDisablingADOnlyAuthMonitoring",
+                      // Azure SQL Managed Instances should disable public network access
+                      "azureSQLManagedInstancesShouldDisablePublicNetworkAccess",
+                      // Azure SQL logical servers should have Microsoft Entra-only authentication enabled during creation
+                      "sqlServerADOnlyEnabledMonitoring",
+                      // Azure SQL Database should have Microsoft Entra-only authentication enabled
+                      "sqlServerDisableADOnlyAuthMonitoring",
+                      // Azure SQL Database should be running TLS version 1.2 or newer
+                      "azureSQLDatabaseShouldBeRunningTLSVersion12OrNewer",
+                      // Public network access on Azure SQL Database should be disabled
+                      "publicNetworkAccessOnAzureSQLDatabaseShouldBeDisabledMonitoringEffect"
+                    ]
+                  }
+                ]
+              },
+              {
+                "kind": "policyEffect",
+                "value": "Audit",
+                "selectors": [
+                  {
+                    "kind": "policyDefinitionReferenceId",
+                    "in": [
+                      // Managed disks should disable public network access
+                      "ManagedDisksPublicAccess"
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

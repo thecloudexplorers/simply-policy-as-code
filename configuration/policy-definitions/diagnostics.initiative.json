@@ -1,0 +1,76 @@
+{
+  "name": "contoso-deploy-diagnostics-log-analytics",
+  "properties": {
+    "displayName": "Contoso - Deploy diagnostic settings to the platform Log Analytics workspace",
+    "description": "Deploys diagnostic settings that stream resource logs to the platform management Log Analytics workspace. Add the diagnostic settings policy of a resource type to policyDefinitions to bring that resource type in scope.",
+    "metadata": {
+      "version": "1.1.0",
+      "category": "Monitoring"
+    },
+    "parameters": {
+      "logAnalytics": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Log Analytics workspace",
+          "description": "Resource id of the Log Analytics workspace that receives the resource logs.",
+          "strongType": "omsWorkspace",
+          "assignPermissions": true
+        }
+      },
+      "effect": {
+        "type": "String",
+        "defaultValue": "DeployIfNotExists",
+        "allowedValues": [
+          "DeployIfNotExists",
+          "AuditIfNotExists",
+          "Disabled"
+        ],
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policies in this initiative."
+        }
+      },
+      "categoryGroup": {
+        "type": "String",
+        "defaultValue": "allLogs",
+        "allowedValues": [
+          "allLogs"
+        ],
+        "metadata": {
+          "displayName": "Category group",
+          "description": "Diagnostic category group that is streamed. Only allLogs is allowed because virtual networks have no audit category group. Add audit back when a resource type that defines it is added to policyDefinitions."
+        }
+      },
+      "resourceLocationList": {
+        "type": "Array",
+        "defaultValue": [
+          "*"
+        ],
+        "metadata": {
+          "displayName": "Resource location list",
+          "description": "Locations of the resources that stream to the workspace. A single entry * selects all locations. Assign the initiative once per region, each with the workspace of that region."
+        }
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "diagnostics-virtual-networks",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/3234ff41-8bec-40a3-b5cb-109c95f1c8ce",
+        "parameters": {
+          "logAnalytics": {
+            "value": "[parameters('logAnalytics')]"
+          },
+          "effect": {
+            "value": "[parameters('effect')]"
+          },
+          "categoryGroup": {
+            "value": "[parameters('categoryGroup')]"
+          },
+          "resourceLocationList": {
+            "value": "[parameters('resourceLocationList')]"
+          }
+        }
+      }
+    ]
+  }
+}

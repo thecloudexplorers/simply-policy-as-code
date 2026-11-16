@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "policyAssignments": {
+      "value": [
+        // Microsoft cloud security benchmark (MCSB) v2 for the Sandbox management group (mg-sandbox), in audit mode only.
+        {
+          "TargetScope": "mg-sandbox",
+          "Assignment": {
+            "AssignmentName": "contoso-sandbox-mcsb-v2",
+            "AssignmentDisplayName": "Contoso - Microsoft Cloud security benchmark v2 (Sandbox)",
+            "AssignmentPolicyId": "/providers/Microsoft.Authorization/policySetDefinitions/e3ec7e09-768c-4b64-882c-fcada3772047",
+            "AssignmentDescription": "Microsoft Cloud Security Benchmark v2 on the Sandbox management group. Members keep their built-in effect so compliance stays visible. This assignment has no effect overrides.",
+            "AssignmentEnforcementMode": "Default",
+            "AssignmentIdentityType": "SystemAssigned",
+            "AssignmentLocation": "westeurope",
+            "AssignmentParameters": {
+              "virtualMachines_ApprovedExtensions_AuditApprovedExtensions": {
+                "value": [
+                  "ConfigurationForWindows",
+                  "ConfigurationForLinux",
+                  "AzureMonitorWindowsAgent",
+                  "AzureMonitorLinuxAgent",
+                  "ChangeTracking-Windows",
+                  "ChangeTracking-Linux",
+                  "MDE.Windows",
+                  "MDE.Linux",
+                  "GuestAttestation",
+                  "NetworkWatcherAgentWindows",
+                  "NetworkWatcherAgentLinux",
+                  "IaaSAntimalware"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,284 @@
+{
+  "name": "contoso-enforce-mandatory-tags",
+  "properties": {
+    "displayName": "Contoso - Enforce mandatory tags from the subscription",
+    "description": "Inherits the mandatory tags from the subscription to resource groups and resources, and reports subscriptions that lack them. The tags follow the Cloud Adoption Framework tagging strategy. To bring another tag in scope, add one reference per policy: the built-in 'Inherit a tag from the subscription' for resources, contoso-inherit-mandatory-tag-from-subscription-to-rg and contoso-audit-tag-on-subscription.",
+    "metadata": {
+      "version": "2.0.0",
+      "category": "Tags"
+    },
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-app",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "app"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-env",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "env"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-region",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "region"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-criticality",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "criticality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-confidentiality",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "confidentiality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-department",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "department"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-program",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "program"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-costcenter",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "costcenter"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-businessunit",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "businessunit"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-opsteam",
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b27a0cbd-a167-4dfa-ae64-4337be671140",
+        "parameters": {
+          "tagName": {
+            "value": "opsteam"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-app",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "app"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-env",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "env"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-region",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "region"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-criticality",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "criticality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-confidentiality",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "confidentiality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-department",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "department"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-program",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "program"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-costcenter",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "costcenter"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-businessunit",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "businessunit"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-inherit-rg-opsteam",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-inherit-mandatory-tag-from-subscription-to-rg",
+        "parameters": {
+          "tagName": {
+            "value": "opsteam"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-app",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "app"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-env",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "env"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-region",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "region"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-criticality",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "criticality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-confidentiality",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "confidentiality"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-department",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "department"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-program",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "program"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-costcenter",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "costcenter"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-businessunit",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "businessunit"
+          }
+        }
+      },
+      {
+        "policyDefinitionReferenceId": "contoso-tag-audit-sub-opsteam",
+        "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policyDefinitions/contoso-audit-tag-on-subscription",
+        "parameters": {
+          "tagName": {
+            "value": "opsteam"
+          }
+        }
+      }
+    ]
+  }
+}

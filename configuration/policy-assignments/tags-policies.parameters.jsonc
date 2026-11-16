@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "policyAssignments": {
+      "value": [
+        // Makes sure the mandatory tags of the subscription are also set on resource groups and resources.
+        // One assignment of the initiative contoso-enforce-mandatory-tags. It replaces the ten separate
+        // tag-inherit-* assignments (one per tag) of the old remediation file.
+        {
+          "TargetScope": "mg-contoso",
+          // The assignment uses a system assigned managed identity to add the missing tags.
+          // This role is given to that identity: Contributor, the role the tag policies declare.
+          "RoleDefinitionIds": [
+            "b24988ac-6180-42a0-ab88-20f7382dd24c"
+          ],
+          "Assignment": {
+            "AssignmentName": "contoso-tags-inherit",
+            "AssignmentDisplayName": "Contoso - Inherit mandatory tags from the subscription",
+            "AssignmentDescription": "Inherits the mandatory tags from the subscription to all resources.",
+            "AssignmentEnforcementMode": "Default",
+            "AssignmentNonComplianceMessage": "A mandatory tag is missing on this resource. The policy adds it from the subscription when the resource is created or updated, or through remediation.",
+            "AssignmentPolicyId": "/providers/Microsoft.Management/managementGroups/mg-contoso/providers/Microsoft.Authorization/policySetDefinitions/contoso-enforce-mandatory-tags",
+            "AssignmentParameters": {},
+            "AssignmentIdentityType": "SystemAssigned",
+            "AssignmentLocation": "westeurope"
+          }
+        }
+      ]
+    }
+  }
+}
